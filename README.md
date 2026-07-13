@@ -23,6 +23,8 @@ No human intervention needed. Works after hours, weekends, holidays.
 
 ## Architecture
 
+![BevBot architecture and knowledge workflow](screenshots/architecture.png)
+
 ```
 Chat Trigger → Summit Agent (Claude AI)
                     ├── Claude Brain (Anthropic Claude Sonnet)
