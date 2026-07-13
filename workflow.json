@@ -1,0 +1,405 @@
+{
+  "name": "BevBot",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        240
+      ],
+      "id": "caabba49-e27b-4ec3-818b-b8ad5e356a2b",
+      "name": "Load Knowledge (run once)"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": "summit_knowledge"
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.1,
+      "position": [
+        48,
+        240
+      ],
+      "id": "8b3da9e0-5253-4653-8871-3b99b8f04491",
+      "name": "Store Knowledge"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        496
+      ],
+      "id": "97d1bc9c-2ddf-4984-bfac-e382dd692021",
+      "name": "Embeddings (insert)",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "MXGlDiPthIWcPdmA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        144,
+        464
+      ],
+      "id": "3b16a837-3045-4cb1-95db-2832cbde2051",
+      "name": "Document Loader"
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "chunkOverlap": 50,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        224,
+        672
+      ],
+      "id": "bd7f25ee-00e9-4a32-b420-910742ce3c86",
+      "name": "Text Splitter"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1712,
+        480
+      ],
+      "id": "67439579-d3e7-4221-8b06-734e4144880e",
+      "name": "Chat",
+      "webhookId": "bevbot-chat"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-5-20250929",
+          "cachedResultName": "Claude Sonnet 4.5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -1488,
+        496
+      ],
+      "id": "0f92b10a-86b9-4777-94e3-5800d293a4fe",
+      "name": "Claude Brain",
+      "credentials": {
+        "anthropicApi": {
+          "id": "rwLoddo3MeI8dpWF",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1360,
+        496
+      ],
+      "id": "66013197-d112-4543-ad06-5afe7d16596c",
+      "name": "Memory"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "summit_knowledge",
+        "toolDescription": "Answers about Summit Beverage Co: brands/portfolio, areas served, becoming a retailer or supplier, ordering, and careers.",
+        "memoryKey": "summit_knowledge"
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.1,
+      "position": [
+        -1232,
+        496
+      ],
+      "id": "1dee3111-de3a-46ab-9910-20682da3c82d",
+      "name": "Knowledge Lookup"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1152,
+        704
+      ],
+      "id": "e9f179f6-c5f4-4daa-b603-37771c7e753f",
+      "name": "Embeddings (query)",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "MXGlDiPthIWcPdmA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "lead_gen"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Name', ``, 'string') }}",
+            "Email": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Email', ``, 'string') }}",
+            "Interest": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Interest', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interest",
+              "displayName": "Interest",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        -944,
+        496
+      ],
+      "id": "e4d1c035-292d-4e8a-b6a1-29c2ec27c066",
+      "name": "save_lead",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cZxJyxTu1CW1EPGE",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are the friendly virtual assistant on the Summit Beverage Co. website, a family-owned Colorado beverage distributor. Your job is to help visitors and capture qualified leads.\n\nALWAYS use the 'summit_knowledge' tool to answer questions about Summit Beverage Co. - the brands/portfolio, areas served, how to become a retailer or supplier, ordering, and careers. Never guess; if it's not in the knowledge, say you're not certain and offer to have the team follow up.\n\nIDENTIFY which of these the visitor is, and guide them helpfully:\n- RETAILER (a bar, restaurant, store, or event wanting to carry Summit Beverage Co. brands)\n- SUPPLIER (a brand/producer wanting Summit Beverage Co. to distribute them)\n- CAREER (someone looking for a job)\n- OTHER (donation request, general question, existing-customer support)\n\nBe genuinely helpful first - answer their questions (e.g. 'do you serve my area?', 'what brands do you carry?'). Then, when there's interest, naturally collect their NAME, EMAIL, and a short note on what they need (business name + location for retailers; brand info for suppliers). Once you have name and email, use the 'save_lead' tool to record the lead with the correct type, then warmly confirm the Summit Beverage Co. team will reach out. Keep replies concise and upbeat.\n\nLEAD FIELDS: Name and Email are REQUIRED before saving a lead. Business name and location are OPTIONAL - ask for them once, but if the visitor doesn't provide them or says they'd rather not, do NOT keep asking. Save the lead with whatever you have (at minimum name and email), leaving optional fields blank. Never block or delay saving a lead just because an optional field is missing. After saving, always confirm in words.\n\nIMPORTANT: After you use the save_lead tool, you MUST always reply to the user with a short confirmation message (e.g. \"Thanks! Got your details - the Summit Beverage Co. team will reach out to you shortly.\"). Never end your turn with an empty response."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -1328,
+        272
+      ],
+      "id": "9d2164ab-9130-44de-994b-b27e73b1286a",
+      "name": "Summit Agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "text",
+              "value": "SUMMIT BEVERAGE CO. - FREQUENTLY ASKED QUESTIONS\n\nABOUT:\nSummit Beverage Co. is a family-owned company and one of Colorado's premier beverage distributors. We distribute the beverages America loves to celebrate with: beer, wine, seltzers, and nonalcoholic beverages. By the numbers (updated quarterly, estimates): around 1,000 customers, 60 suppliers, 100 brands, and 1,200 products.\n\nAREAS WE SERVE:\nNorthern Colorado, extending north and east to the state lines. On the Western Slope, from Grand Junction to Gunnison and Crested Butte, and south to Telluride. If a retailer is outside these areas, take their details and our team will advise.\n\nBRANDS / PORTFOLIO:\nOur portfolio includes brands from Molson Coors, Crown Imports, Heineken USA, Pabst, New Belgium Brewing, Mike's Hard Lemonade, Oskar Blues, Boston Beer, Sierra Nevada, Lagunitas, and many others - beer, wine, seltzers, and nonalcoholic options.\n\nFOR RETAILERS (bars, restaurants, stores, events):\nLicensed retailers can open an account to carry our brands. We offer sales incentives, pay-for-performance programs, and sales/marketing strategies plus shelf-management tools to help drive revenue for retail partners. To get started, apply to open an account or leave your details and our team will reach out. Existing customers can also order online.\n\nFOR SUPPLIERS (brands seeking distribution):\nWe work with supplier representatives to set sales volume goals and design incentives and bonuses for hitting them. Beverage producers interested in Colorado distribution can leave their details to be considered.\n\nCAREERS:\nSummit Beverage Co. is a progressive, family-owned employer offering competitive wages, comprehensive benefits, mentor programs, and family-friendly events. Job seekers can be pointed to the Careers page.\n\nOTHER:\nWe also handle donation requests and community involvement. For account-specific issues, pricing, or orders, a team member will follow up.\n\nNOTE: This assistant shares general public info about Summit Beverage Co. For account, pricing, or order specifics, the Summit Beverage Co. team will follow up.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -208,
+        240
+      ],
+      "id": "5367d58c-6d08-407c-8ae2-1f54c49350f4",
+      "name": "Summit Knowledge Doc"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Load Knowledge (run once)": {
+      "main": [
+        [
+          {
+            "node": "Summit Knowledge Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings (insert)": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Store Knowledge",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Store Knowledge",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Document Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat": {
+      "main": [
+        [
+          {
+            "node": "Summit Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Summit Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Knowledge Lookup": {
+      "ai_tool": [
+        [
+          {
+            "node": "Summit Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings (query)": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Knowledge Lookup",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "save_lead": {
+      "ai_tool": [
+        [
+          {
+            "node": "Summit Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Brain": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summit Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summit Knowledge Doc": {
+      "main": [
+        [
+          {
+            "node": "Store Knowledge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "nodeGroups": [],
+  "tags": []
+}
