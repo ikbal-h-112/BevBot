@@ -1,4 +1,4 @@
-# BevBot — AI Lead Generation Chatbot for Beverage Distributors
+# BevBot - AI Lead Generation Chatbot for Beverage Distributors (And any B2B Business)
 
 An intelligent website chatbot built on n8n that answers visitor questions from a company knowledge base (RAG) and captures qualified leads into a Google Sheet — fully automated, running 24/7.
 
